@@ -1,10 +1,10 @@
-from cProfile import label
 from ssg import hooks, parsers
 
+files = []
 
+@hooks.register("collect_files")
 def collect_files(source, site_parsers):
     valid = lambda p : not p.isinstance(parsers.parsers.ResourceParser)
-    files = []
 
     for path in source.rglob("*"):
         for parser in list(filter(valid, site_parsers)):
@@ -13,11 +13,10 @@ def collect_files(source, site_parsers):
     
     return files
 
-hooks.register('collect_files', collect_files)
-
+@hooks.register("generate_menu")
 def generate_menu(html, ext):
     template = '<li><a href="{}{}">{}</a></li>'
     menu_item = lambda name, ext : template.format((name, ext, name))
-    return template
 
-hooks.register('generate_menu', generate_menu)
+    menu = "\n".join([ menu_item(path.stem, path.ext)  for path in files ])
+    return "<ul>\n{}<ul>\n{}".format(menu, html)
