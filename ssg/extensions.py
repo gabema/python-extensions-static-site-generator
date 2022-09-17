@@ -5,11 +5,7 @@ from pathlib import Path
 
 
 _callbacks = {}
-'''
-Register callbacks
-hook - the name of the hook to register
-order - the order in the callback chain it should be called. defaults to 0
-'''
+
 def register(hook, order = 0):
     def register_callback(func):
         _callbacks.setdefault(hook, {}).setdefault(order, []).append(func)
