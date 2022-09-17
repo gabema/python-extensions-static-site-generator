@@ -9,7 +9,7 @@ def load_module(directory, name) :
     sys.path.pop(0)
 
 def load_directory(directory) :
-    for path in directory.rglob(r'\.py$') :
+    for path in directory.rglob("*.py"):
         load_module(directory.as_posix(path), path.stem)
 
 def load_bundled() :
