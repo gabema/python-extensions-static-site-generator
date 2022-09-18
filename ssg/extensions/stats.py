@@ -1,0 +1,28 @@
+from sys import api_version
+from ssg import hooks
+import time
+
+start_time = None
+total_written = 0
+
+@hooks.register('start_build')
+def start_build() :
+    global start_time
+    start_time = time.time_ns()
+
+@hooks.register('written')
+def written() :
+    global total_written
+    total_written += 1
+
+@hooks.register('stats')
+def stats() :
+    global start_time
+    global total_written
+    final_time = time.time_ns() - start_time
+    if total_written != 0 : 
+        average = final_time / total_written
+    else:
+        average = 0
+    report = "Converted: {} · Time: {:.2f} sec · Avg: {:.4f} sec/file"
+    print(report.format(total_written, final_time, average))
